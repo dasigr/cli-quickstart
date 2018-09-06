@@ -1,11 +1,25 @@
-<h3>Top Customers</h3>
-<div class="grid grid-pad">
-  <a *ngFor="let customer of customers" class="col-1-4"
-      routerLink="/detail/{{customer.id}}">
-    <div class="module customer">
-      <h4>{{customer.name}}</h4>
-    </div>
-  </a>
+<div class="row mb-4">
+  <div class="col-12">
+    <h4>Top Customers</h4>
+    <table class="table table-bordered table-striped table-responsive-sm table-sm">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let customer of customers">
+        <td><a routerLink="/detail/{{customer.id}}">{{customer.id}}</a></td>
+        <td>{{customer.name}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<app-customer-search></app-customer-search>
+<div class="row mb-4">
+  <div class="col-12">
+    <app-customer-search></app-customer-search>
+  </div>
+</div>

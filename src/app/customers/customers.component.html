@@ -1,21 +1,40 @@
-<h2>Customers</h2>
+<h2 class="mb-4">Customers</h2>
 
-<div>
-  <label>Customer name:
-    <input #customerName />
-  </label>
-  <!-- (click) passes input value to add() and then clears the input -->
-  <button (click)="add(customerName.value); customerName.value=''">
-    add
-  </button>
+<div class="row mb-4">
+  <div class="col-4">
+    <h4>Add customer</h4>
+    <div id="customers-form" class="p-2 border">
+      <div class="form-group">
+        <label>Customer name:
+          <input class="form-control" #customerName />
+        </label>
+      </div>
+      <!-- (click) passes input value to add() and then clears the input -->
+      <button class="btn-primary" (click)="add(customerName.value); customerName.value=''">
+        Add Value
+      </button>
+    </div>
+  </div>
 </div>
 
-<ul class="customers">
-  <li *ngFor="let customer of customers">
-    <a routerLink="/detail/{{customer.id}}">
-      <span class="badge">{{customer.id}}</span> {{customer.name}}
-    </a>
-    <button class="delete" title="delete customer"
-      (click)="delete(customer)">x</button>
-  </li>
-</ul>
+<div class="row mb-4">
+  <div class="col-12">
+    <h4>Customers</h4>
+    <table class="table table-bordered table-striped table-responsive-sm table-sm">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Operation</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let customer of customers">
+        <td><a routerLink="/detail/{{customer.id}}">{{customer.id}}</a></td>
+        <td>{{customer.name}}</td>
+        <td><button class="btn-danger" title="delete item" (click)="delete(customer)">delete</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
