@@ -9,11 +9,13 @@ import { InMemoryDataService }  from './in-memory-data.service';
 import { AppRoutingModule }     from './app-routing.module';
 
 import { AppComponent }         from './app.component';
+import { MessagesComponent }    from './messages/messages.component';
 import { DashboardComponent }   from './dashboard/dashboard.component';
 import { CustomerDetailComponent }  from './customer-detail/customer-detail.component';
 import { CustomersComponent }      from './customers/customers.component';
 import { CustomerSearchComponent }  from './customer-search/customer-search.component';
-import { MessagesComponent }    from './messages/messages.component';
+import { ItemsComponent }      from './items/items.component';
+import { ItemDetailComponent }  from './item-detail/item-detail.component';
 
 @NgModule({
   imports: [
@@ -34,6 +36,8 @@ import { MessagesComponent }    from './messages/messages.component';
     DashboardComponent,
     CustomersComponent,
     CustomerDetailComponent,
+    ItemsComponent,
+    ItemDetailComponent,
     MessagesComponent,
     CustomerSearchComponent
   ],

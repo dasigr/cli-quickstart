@@ -1,0 +1,29 @@
+<h2>Items</h2>
+
+<div>
+  <div class="form-group">
+    <label>Item:
+      <input #itemName />
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="itemLists">List:</label>
+    <select class="form-control" id="itemLists">
+      <option *ngFor="let list of lists" [value]="list">{{list}}</option>
+    </select>
+  </div>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(itemName.value); itemName.value=''">
+    Add Value
+  </button>
+</div>
+
+<ul class="items">
+  <li *ngFor="let item of items">
+    <a routerLink="/item/{{item.id}}">
+      <span class="badge">{{item.id}}</span> {{item.name}}
+    </a>
+    <button class="delete" title="delete item"
+      (click)="delete(item)">x</button>
+  </li>
+</ul>
