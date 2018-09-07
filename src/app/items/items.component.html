@@ -1,0 +1,47 @@
+<h2 class="mb-4">Items</h2>
+
+<div class="row mb-4">
+  <div class="col-4">
+    <h4>Add item</h4>
+    <div id="items-form" class="p-4 border">
+      <div class="form-group">
+        <label>Item:</label>
+        <input class="form-control" #itemName />
+      </div>
+      <div class="form-group">
+        <label for="itemList">List:</label>
+        <select class="form-control" id="itemList">
+          <option *ngFor="let list of lists" [value]="list">{{list}}</option>
+        </select>
+      </div>
+      <!-- (click) passes input value to add() and then clears the input -->
+      <button class="btn-primary" (click)="add(itemName.value); itemName.value=''">
+        Add Value
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <h4>Items</h4>
+    <table class="table table-bordered table-striped table-responsive-sm table-sm">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>List</th>
+        <th>Operation</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of items">
+        <td><a routerLink="/item/{{item.id}}">{{item.id}}</a></td>
+        <td>{{item.name}}</td>
+        <td>{{item.list}}</td>
+        <td><button class="btn-danger" title="delete item" (click)="delete(item)">delete</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

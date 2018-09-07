@@ -1,11 +1,11 @@
 <div class="row mb-4">
   <div class="col-12">
-    <div *ngIf="customer">
-      <h2>{{customer.name | uppercase}}</h2>
-      <div><span>id: </span>{{customer.id}}</div>
+    <div *ngIf="item">
+      <h2>{{item.name | uppercase}}</h2>
+      <div><span>id: </span>{{item.id}}</div>
       <div>
         <label>name:
-          <input [(ngModel)]="customer.name" placeholder="name"/>
+          <input [(ngModel)]="item.name" placeholder="name"/>
         </label>
       </div>
       <button class="btn-default" (click)="goBack()">go back</button>
