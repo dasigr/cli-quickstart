@@ -23,10 +23,10 @@ export class ItemsComponent implements OnInit {
     .subscribe(items => this.items = items);
   }
 
-  add(name: string): void {
-    name = name.trim();
-    if (!name) { return; }
-    this.itemService.addItem({ name } as Item)
+  add(title: string): void {
+    title = title.trim();
+    if (!title) { return; }
+    this.itemService.addItem({ title } as Item)
       .subscribe(item => {
         this.items.push(item);
       });
