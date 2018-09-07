@@ -3,15 +3,14 @@
 <div class="row mb-4">
   <div class="col-4">
     <h4>Add item</h4>
-    <div id="items-form" class="p-2 border">
+    <div id="items-form" class="p-4 border">
       <div class="form-group">
-        <label>Item:
-          <input class="form-control" #itemName />
-        </label>
+        <label>Item:</label>
+        <input class="form-control" #itemName />
       </div>
       <div class="form-group">
-        <label for="itemLists">List:</label>
-        <select class="form-control" id="itemLists">
+        <label for="itemList">List:</label>
+        <select class="form-control" id="itemList">
           <option *ngFor="let list of lists" [value]="list">{{list}}</option>
         </select>
       </div>
