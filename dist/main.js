@@ -56,7 +56,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: _dashboard_dashboard_component__WEBPACK_IMPORTED_MODULE_2__["DashboardComponent"] },
-    { path: 'detail/:id', component: _customer_detail_customer_detail_component__WEBPACK_IMPORTED_MODULE_4__["CustomerDetailComponent"] },
+    { path: 'customer/:id', component: _customer_detail_customer_detail_component__WEBPACK_IMPORTED_MODULE_4__["CustomerDetailComponent"] },
     { path: 'customers', component: _customers_customers_component__WEBPACK_IMPORTED_MODULE_3__["CustomersComponent"] },
     { path: 'item/:nid', component: _item_detail_item_detail_component__WEBPACK_IMPORTED_MODULE_6__["ItemDetailComponent"] },
     { path: 'items', component: _items_items_component__WEBPACK_IMPORTED_MODULE_5__["ItemsComponent"] }
@@ -226,7 +226,7 @@ module.exports = "/* CustomerDetailComponent's private CSS styles */\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <div *ngIf=\"customer\">\n      <h2>{{customer.name | uppercase}}</h2>\n      <div><span>id: </span>{{customer.id}}</div>\n      <div>\n        <label>name:\n          <input [(ngModel)]=\"customer.name\" placeholder=\"name\"/>\n        </label>\n      </div>\n      <button class=\"btn-default\" (click)=\"goBack()\">go back</button>\n      <button class=\"btn-primary\" (click)=\"save()\">save</button>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <div *ngIf=\"customer\">\n      <h2>{{customer.name | uppercase}}</h2>\n      <div><span>nid: </span>{{customer.nid}}</div>\n      <div>\n        <label>name:\n          <input [(ngModel)]=\"customer.name\" placeholder=\"name\"/>\n        </label>\n      </div>\n      <button class=\"btn-default\" (click)=\"goBack()\">go back</button>\n      <button class=\"btn-primary\" (click)=\"save()\">save</button>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -270,8 +270,8 @@ var CustomerDetailComponent = /** @class */ (function () {
     };
     CustomerDetailComponent.prototype.getCustomer = function () {
         var _this = this;
-        var id = +this.route.snapshot.paramMap.get('id');
-        this.customerService.getCustomer(id)
+        var nid = +this.route.snapshot.paramMap.get('nid');
+        this.customerService.getCustomer(nid)
             .subscribe(function (customer) { return _this.customer = customer; });
     };
     CustomerDetailComponent.prototype.goBack = function () {
@@ -321,7 +321,7 @@ module.exports = "/* CustomerSearch private styles */\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"search-component\">\n  <h4>Customer Search</h4>\n\n  <input #searchBox id=\"search-box\" (keyup)=\"search(searchBox.value)\" />\n\n  <ul class=\"search-result\">\n    <li *ngFor=\"let customer of customers$ | async\" >\n      <a routerLink=\"/detail/{{customer.id}}\">\n        {{customer.name}}\n      </a>\n    </li>\n  </ul>\n</div>\n"
+module.exports = "<div id=\"search-component\">\n  <h4>Customer Search</h4>\n\n  <input #searchBox id=\"search-box\" (keyup)=\"search(searchBox.value)\" />\n\n  <ul class=\"search-result\">\n    <li *ngFor=\"let customer of customers$ | async\" >\n      <a routerLink=\"/customer/{{customer.nid}}\">\n        {{customer.name}}\n      </a>\n    </li>\n  </ul>\n</div>\n"
 
 /***/ }),
 
@@ -422,30 +422,31 @@ var CustomerService = /** @class */ (function () {
     function CustomerService(http, messageService) {
         this.http = http;
         this.messageService = messageService;
-        this.customersUrl = 'api/customers'; // URL to web api
+        this.customersUrl = 'http://dev-dascrm.pantheonsite.io/v1/customers'; // URL to web api
     }
     /** GET customers from the server */
     CustomerService.prototype.getCustomers = function () {
         var _this = this;
-        return this.http.get(this.customersUrl)
+        var url = this.customersUrl + "/?_format=json";
+        return this.http.get(url)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (customers) { return _this.log('fetched customers'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getCustomers', [])));
     };
-    /** GET customer by id. Return `undefined` when id not found */
-    CustomerService.prototype.getCustomerNo404 = function (id) {
+    /** GET customer by nid. Return `undefined` when nid not found */
+    CustomerService.prototype.getCustomerNo404 = function (nid) {
         var _this = this;
-        var url = this.customersUrl + "/?id=" + id;
+        var url = this.customersUrl + "/?_format=json&nid=" + nid;
         return this.http.get(url)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (customers) { return customers[0]; }), // returns a {0|1} element array
         Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (h) {
             var outcome = h ? "fetched" : "did not find";
-            _this.log(outcome + " customer id=" + id);
-        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getCustomer id=" + id)));
+            _this.log(outcome + " customer nid=" + nid);
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getCustomer nid=" + nid)));
     };
-    /** GET customer by id. Will 404 if id not found */
-    CustomerService.prototype.getCustomer = function (id) {
+    /** GET customer by nid. Will 404 if nid not found */
+    CustomerService.prototype.getCustomer = function (nid) {
         var _this = this;
-        var url = this.customersUrl + "/" + id;
-        return this.http.get(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("fetched customer id=" + id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getCustomer id=" + id)));
+        var url = this.customersUrl + "/" + nid + "/?_format=json";
+        return this.http.get(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("fetched customer nid=" + nid); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getCustomer nid=" + nid)));
     };
     /* GET customers whose name contains search term */
     CustomerService.prototype.searchCustomers = function (term) {
@@ -454,25 +455,25 @@ var CustomerService = /** @class */ (function () {
             // if not search term, return empty customer array.
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])([]);
         }
-        return this.http.get(this.customersUrl + "/?name=" + term).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("found customers matching \"" + term + "\""); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('searchCustomers', [])));
+        return this.http.get(this.customersUrl + "/?_format=json&name=" + term).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("found customers matching \"" + term + "\""); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('searchCustomers', [])));
     };
     //////// Save methods //////////
     /** POST: add a new customer to the server */
     CustomerService.prototype.addCustomer = function (customer) {
         var _this = this;
-        return this.http.post(this.customersUrl, customer, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (customer) { return _this.log("added customer w/ id=" + customer.id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('addCustomer')));
+        return this.http.post(this.customersUrl, customer, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (customer) { return _this.log("added customer w/ nid=" + customer.nid); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('addCustomer')));
     };
     /** DELETE: delete the customer from the server */
     CustomerService.prototype.deleteCustomer = function (customer) {
         var _this = this;
-        var id = typeof customer === 'number' ? customer : customer.id;
-        var url = this.customersUrl + "/" + id;
-        return this.http.delete(url, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("deleted customer id=" + id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('deleteCustomer')));
+        var nid = typeof customer === 'number' ? customer : customer.nid;
+        var url = this.customersUrl + "/" + nid;
+        return this.http.delete(url, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("deleted customer nid=" + nid); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('deleteCustomer')));
     };
     /** PUT: update the customer on the server */
     CustomerService.prototype.updateCustomer = function (customer) {
         var _this = this;
-        return this.http.put(this.customersUrl, customer, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("updated customer id=" + customer.id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('updateCustomer')));
+        return this.http.put(this.customersUrl, customer, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("updated customer nid=" + customer.nid); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('updateCustomer')));
     };
     /**
      * Handle Http operation that failed.
@@ -546,7 +547,7 @@ module.exports = "/* CustomersComponent's private CSS styles */\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2 class=\"mb-4\">Customers</h2>\n\n<div class=\"row mb-4\">\n  <div class=\"col-4\">\n    <h4>Add customer</h4>\n    <div id=\"customers-form\" class=\"p-2 border\">\n      <div class=\"form-group\">\n        <label>Customer name:\n          <input class=\"form-control\" #customerName />\n        </label>\n      </div>\n      <!-- (click) passes input value to add() and then clears the input -->\n      <button class=\"btn-primary\" (click)=\"add(customerName.value); customerName.value=''\">\n        Add Value\n      </button>\n    </div>\n  </div>\n</div>\n\n<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <h4>Customers</h4>\n    <table class=\"table table-bordered table-striped table-responsive-sm table-sm\">\n      <thead>\n      <tr>\n        <th>ID</th>\n        <th>Name</th>\n        <th>Operation</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let customer of customers\">\n        <td><a routerLink=\"/detail/{{customer.id}}\">{{customer.id}}</a></td>\n        <td>{{customer.name}}</td>\n        <td><button class=\"btn-danger\" title=\"delete item\" (click)=\"delete(customer)\">delete</button></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n"
+module.exports = "<h2 class=\"mb-4\">Customers</h2>\n\n<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <app-customer-search></app-customer-search>\n  </div>\n</div>\n\n<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <h4>Customers</h4>\n    <table class=\"table table-bordered table-striped table-responsive-sm table-sm\">\n      <thead>\n      <tr>\n        <th>ID</th>\n        <th>Name</th>\n        <th>Address</th>\n        <th>Postcode</th>\n        <th>Phone</th>\n        <th>Fax</th>\n        <th>Salesman</th>\n        <th>Group</th>\n        <th>Operation</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let customer of customers\">\n        <td><a routerLink=\"/customer/{{customer.nid}}\">{{customer.nid}}</a></td>\n        <td>{{customer.name}}</td>\n        <td>{{customer.address}}</td>\n        <td>{{customer.postcode}}</td>\n        <td>{{customer.phone}}</td>\n        <td>{{customer.fax}}</td>\n        <td>{{customer.salesman}}</td>\n        <td>{{customer.group}}</td>\n        <td><button class=\"btn-danger\" title=\"delete item\" (click)=\"delete(customer)\">delete</button></td>\n      </tr>\n      </tbody>\n    </table>\n    <nav aria-label=\"Page navigation example\">\n      <ul class=\"pagination\">\n        <li class=\"page-item\"><a class=\"page-link\" routerLink=\"/customers?page=prev\">Previous</a></li>\n        <li class=\"page-item\"><a class=\"page-link\" routerLink=\"/customers?page=1\">1</a></li>\n        <li class=\"page-item\"><a class=\"page-link\" routerLink=\"/customers?page=2\">2</a></li>\n        <li class=\"page-item\"><a class=\"page-link\" routerLink=\"/customers?page=3\">3</a></li>\n        <li class=\"page-item\"><a class=\"page-link\" routerLink=\"/customers?page=next\">Next</a></li>\n      </ul>\n    </nav>\n  </div>\n</div>\n\n<div class=\"row mb-4\">\n  <div class=\"col-4\">\n    <h4>Add customer</h4>\n    <div id=\"customers-form\" class=\"p-2 border\">\n      <div class=\"form-group\">\n        <label>Customer name:\n          <input class=\"form-control\" #customerName />\n        </label>\n      </div>\n      <!-- (click) passes input value to add() and then clears the input -->\n      <button class=\"btn-primary\" (click)=\"add(customerName.value); customerName.value=''\">\n        Add Value\n      </button>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -633,7 +634,7 @@ module.exports = "/* DashboardComponent's private CSS styles */\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <h4>Top Customers</h4>\n    <table class=\"table table-bordered table-striped table-responsive-sm table-sm\">\n      <thead>\n      <tr>\n        <th>ID</th>\n        <th>Name</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let customer of customers\">\n        <td><a routerLink=\"/detail/{{customer.id}}\">{{customer.id}}</a></td>\n        <td>{{customer.name}}</td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n\n<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <app-customer-search></app-customer-search>\n  </div>\n</div>\n"
+module.exports = "<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <h4>Top Customers</h4>\n    <table class=\"table table-bordered table-striped table-responsive-sm table-sm\">\n      <thead>\n      <tr>\n        <th>ID</th>\n        <th>Name</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let customer of customers\">\n        <td><a routerLink=\"/customer/{{customer.nid}}\">{{customer.nid}}</a></td>\n        <td>{{customer.name}}</td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n\n<div class=\"row mb-4\">\n  <div class=\"col-12\">\n    <app-customer-search></app-customer-search>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -819,7 +820,7 @@ var ItemService = /** @class */ (function () {
     function ItemService(http, messageService) {
         this.http = http;
         this.messageService = messageService;
-        this.itemsUrl = 'http://dev-dascrm.pantheonsite.io/api/articles'; // URL to web api.
+        this.itemsUrl = 'http://dev-dascrm.pantheonsite.io/v1/articles'; // URL to web api.
     }
     /** GET items from the server */
     ItemService.prototype.getItems = function () {
