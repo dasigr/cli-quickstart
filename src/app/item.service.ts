@@ -14,7 +14,7 @@ const httpOptions = {
 @Injectable({ providedIn: 'root' })
 export class ItemService {
 
-  private itemsUrl = 'http://dev-dascrm.pantheonsite.io/api/articles';  // URL to web api.
+  private itemsUrl = 'http://dev-dascrm.pantheonsite.io/v1/articles';  // URL to web api.
 
   constructor(
     private http: HttpClient,

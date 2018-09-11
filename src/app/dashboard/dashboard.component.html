@@ -10,7 +10,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let customer of customers">
-        <td><a routerLink="/detail/{{customer.id}}">{{customer.id}}</a></td>
+        <td><a routerLink="/customer/{{customer.nid}}">{{customer.nid}}</a></td>
         <td>{{customer.name}}</td>
       </tr>
       </tbody>

@@ -2,7 +2,7 @@
   <div class="col-12">
     <div *ngIf="customer">
       <h2>{{customer.name | uppercase}}</h2>
-      <div><span>id: </span>{{customer.id}}</div>
+      <div><span>nid: </span>{{customer.nid}}</div>
       <div>
         <label>name:
           <input [(ngModel)]="customer.name" placeholder="name"/>

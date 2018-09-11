@@ -1,6 +1,55 @@
 <h2 class="mb-4">Customers</h2>
 
 <div class="row mb-4">
+  <div class="col-12">
+    <app-customer-search></app-customer-search>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <h4>Customers</h4>
+    <table class="table table-bordered table-striped table-responsive-sm table-sm">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Postcode</th>
+        <th>Phone</th>
+        <th>Fax</th>
+        <th>Salesman</th>
+        <th>Group</th>
+        <th>Operation</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let customer of customers">
+        <td><a routerLink="/customer/{{customer.nid}}">{{customer.nid}}</a></td>
+        <td>{{customer.name}}</td>
+        <td>{{customer.address}}</td>
+        <td>{{customer.postcode}}</td>
+        <td>{{customer.phone}}</td>
+        <td>{{customer.fax}}</td>
+        <td>{{customer.salesman}}</td>
+        <td>{{customer.group}}</td>
+        <td><button class="btn-danger" title="delete item" (click)="delete(customer)">delete</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item"><a class="page-link" routerLink="/customers?page=prev">Previous</a></li>
+        <li class="page-item"><a class="page-link" routerLink="/customers?page=1">1</a></li>
+        <li class="page-item"><a class="page-link" routerLink="/customers?page=2">2</a></li>
+        <li class="page-item"><a class="page-link" routerLink="/customers?page=3">3</a></li>
+        <li class="page-item"><a class="page-link" routerLink="/customers?page=next">Next</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="row mb-4">
   <div class="col-4">
     <h4>Add customer</h4>
     <div id="customers-form" class="p-2 border">
@@ -14,27 +63,5 @@
         Add Value
       </button>
     </div>
-  </div>
-</div>
-
-<div class="row mb-4">
-  <div class="col-12">
-    <h4>Customers</h4>
-    <table class="table table-bordered table-striped table-responsive-sm table-sm">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Operation</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let customer of customers">
-        <td><a routerLink="/detail/{{customer.id}}">{{customer.id}}</a></td>
-        <td>{{customer.name}}</td>
-        <td><button class="btn-danger" title="delete item" (click)="delete(customer)">delete</button></td>
-      </tr>
-      </tbody>
-    </table>
   </div>
 </div>

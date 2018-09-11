@@ -14,7 +14,7 @@ const httpOptions = {
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
 
-  private customersUrl = 'api/customers';  // URL to web api
+  private customersUrl = 'http://dev-dascrm.pantheonsite.io/v1/customers';  // URL to web api
 
   constructor(
     private http: HttpClient,
@@ -22,33 +22,34 @@ export class CustomerService {
 
   /** GET customers from the server */
   getCustomers (): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.customersUrl)
+    const url = `${this.customersUrl}/?_format=json`;
+    return this.http.get<Customer[]>(url)
       .pipe(
         tap(customers => this.log('fetched customers')),
         catchError(this.handleError('getCustomers', []))
       );
   }
 
-  /** GET customer by id. Return `undefined` when id not found */
-  getCustomerNo404<Data>(id: number): Observable<Customer> {
-    const url = `${this.customersUrl}/?id=${id}`;
+  /** GET customer by nid. Return `undefined` when nid not found */
+  getCustomerNo404<Data>(nid: number): Observable<Customer> {
+    const url = `${this.customersUrl}/?_format=json&nid=${nid}`;
     return this.http.get<Customer[]>(url)
       .pipe(
         map(customers => customers[0]), // returns a {0|1} element array
         tap(h => {
           const outcome = h ? `fetched` : `did not find`;
-          this.log(`${outcome} customer id=${id}`);
+          this.log(`${outcome} customer nid=${nid}`);
         }),
-        catchError(this.handleError<Customer>(`getCustomer id=${id}`))
+        catchError(this.handleError<Customer>(`getCustomer nid=${nid}`))
       );
   }
 
-  /** GET customer by id. Will 404 if id not found */
-  getCustomer(id: number): Observable<Customer> {
-    const url = `${this.customersUrl}/${id}`;
+  /** GET customer by nid. Will 404 if nid not found */
+  getCustomer(nid: number): Observable<Customer> {
+    const url = `${this.customersUrl}/${nid}/?_format=json`;
     return this.http.get<Customer>(url).pipe(
-      tap(_ => this.log(`fetched customer id=${id}`)),
-      catchError(this.handleError<Customer>(`getCustomer id=${id}`))
+      tap(_ => this.log(`fetched customer nid=${nid}`)),
+      catchError(this.handleError<Customer>(`getCustomer nid=${nid}`))
     );
   }
 
@@ -58,7 +59,7 @@ export class CustomerService {
       // if not search term, return empty customer array.
       return of([]);
     }
-    return this.http.get<Customer[]>(`${this.customersUrl}/?name=${term}`).pipe(
+    return this.http.get<Customer[]>(`${this.customersUrl}/?_format=json&name=${term}`).pipe(
       tap(_ => this.log(`found customers matching "${term}"`)),
       catchError(this.handleError<Customer[]>('searchCustomers', []))
     );
@@ -69,18 +70,18 @@ export class CustomerService {
   /** POST: add a new customer to the server */
   addCustomer (customer: Customer): Observable<Customer> {
     return this.http.post<Customer>(this.customersUrl, customer, httpOptions).pipe(
-      tap((customer: Customer) => this.log(`added customer w/ id=${customer.id}`)),
+      tap((customer: Customer) => this.log(`added customer w/ nid=${customer.nid}`)),
       catchError(this.handleError<Customer>('addCustomer'))
     );
   }
 
   /** DELETE: delete the customer from the server */
   deleteCustomer (customer: Customer | number): Observable<Customer> {
-    const id = typeof customer === 'number' ? customer : customer.id;
-    const url = `${this.customersUrl}/${id}`;
+    const nid = typeof customer === 'number' ? customer : customer.nid;
+    const url = `${this.customersUrl}/${nid}`;
 
     return this.http.delete<Customer>(url, httpOptions).pipe(
-      tap(_ => this.log(`deleted customer id=${id}`)),
+      tap(_ => this.log(`deleted customer nid=${nid}`)),
       catchError(this.handleError<Customer>('deleteCustomer'))
     );
   }
@@ -88,7 +89,7 @@ export class CustomerService {
   /** PUT: update the customer on the server */
   updateCustomer (customer: Customer): Observable<any> {
     return this.http.put(this.customersUrl, customer, httpOptions).pipe(
-      tap(_ => this.log(`updated customer id=${customer.id}`)),
+      tap(_ => this.log(`updated customer nid=${customer.nid}`)),
       catchError(this.handleError<any>('updateCustomer'))
     );
   }
